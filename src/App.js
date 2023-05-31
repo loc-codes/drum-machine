@@ -14,23 +14,6 @@ import "./App.css"
 
 function App() {
 
-  const containerStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    border: "2vw solid black",
-    marginTop: "10vw",
-    backgroundColor: "#121212",
-    height: "50vw",
-  }
-
-  const appStyle ={
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  }
-
-
   const refs = {
     "Q": useRef(),
     "W": useRef(),
@@ -43,10 +26,15 @@ function App() {
     "C": useRef()
   };
 
-  const [display, setDisplay] = useState(() => {return 'Press a Button'})
+  const [display, setDisplay] = useState('LOC . DRUMS')
+  const [activeKey, setActiveKey] = useState(0)
+  const [timeoutId, setTimeoutId] = useState(null)
 
   const padPress = (pad) => {
-    setDisplay(pad)
+    clearTimeout(timeoutId); 
+    setDisplay(pad);
+    const id = setTimeout(() => setDisplay('LOC . DRUMS'), 3000);
+    setTimeoutId(id);
   }
 
   useEffect(() => {
@@ -54,33 +42,119 @@ function App() {
     return () => {
       document.removeEventListener('keydown', detectKeyDown);
     };
-  }, []);
+  }, [activeKey,setActiveKey]);
 
   const detectKeyDown = (e) => {
     const pad = refs[e.key.toUpperCase()]
-    if (pad && pad.current){pad.current.click()}
+    if (pad && pad.current){
+      pad.current.click()
+      setActiveKey(e.key.toUpperCase())
+    }
+    setTimeout(() => {
+      setActiveKey(null)
+    }, 200)
   }
 
   return (
-    <div className="App" style={appStyle}>
-      <div id="drum-machine" style={containerStyle}>
-        
+    <div className="App">
+      <div id="drum-machine">
         <div id="drum-pads-container">
         <Display id="display" text={display}/>
           <div className="row" id="row1">
-          <Drumpad ref={refs.Q} name="Chord 1" class="drum-pad" id="Q" pressed={padPress} audio={chord1}/>
-          <Drumpad ref={refs.W} name="Chord 2" class="drum-pad" id="W" pressed={padPress} audio={chord2}/>
-          <Drumpad ref={refs.E} name="Chord 3" class="drum-pad" id="E" pressed={padPress} audio={chord3}/>
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.Q}
+                name="CHORD 1"
+                class="drum-pad"
+                id="Q"
+                pressed={padPress}
+                active={activeKey === 'Q'}
+                audio={chord1}
+            />
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.W}
+                name="CHORD 2"
+                class="drum-pad"
+                id="W"
+                pressed={padPress}
+                active={activeKey === 'W'}
+                audio={chord2}
+              />
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.E}
+                name="CHORD 3"
+                class="drum-pad"
+                id="E"
+                pressed={padPress}
+                active={activeKey === 'E'}
+                audio={chord3}
+            />
           </div>
           <div className="row" id="row2">
-          <Drumpad ref={refs.A} name="Clap" class="drum-pad" id="A" pressed={padPress} audio={clap}/>
-          <Drumpad ref={refs.S} name="Closed Hat" class="drum-pad" id="S" pressed={padPress} audio={closed_hat}/>
-          <Drumpad ref={refs.D} name="Kick & Hat" class="drum-pad" id="D" pressed={padPress} audio={kick_n_hat}/>
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.A}
+                name="CLAP"
+                class="drum-pad"
+                id="A"
+                pressed={padPress}
+                active={activeKey === 'A'}
+                audio={clap}
+            />
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.S}
+                name="CLOSED HAT"
+                class="drum-pad"
+                id="S"
+                pressed={padPress}
+                active={activeKey === 'S'}
+                audio={closed_hat}
+            />
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.D}
+                name="KICK HAT"
+                class="drum-pad"
+                id="D"
+                pressed={padPress}
+                active={activeKey === 'D'}
+                audio={kick_n_hat}
+            />
           </div>
           <div className="row" id="row3">
-          <Drumpad ref={refs.Z} name="Kick" class="drum-pad" id="Z" pressed={padPress} audio={kick}/>
-          <Drumpad ref={refs.X} name="Open Hat" class="drum-pad" id="X" pressed={padPress} audio={open_hat}/>
-          <Drumpad ref={refs.C} name="Shaker" class="drum-pad" id="C" pressed={padPress} audio={shaker}/>
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.Z}
+                name="KICK"
+                class="drum-pad"
+                id="Z"
+                pressed={padPress}
+                active={activeKey === 'Z'}
+                audio={kick}
+            />
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.X}
+                name="OPEN HAT"
+                class="drum-pad"
+                id="X"
+                pressed={padPress}
+                active={activeKey === 'X'}
+                audio={open_hat}
+              />
+            <Drumpad
+                setActiveKey={setActiveKey}
+                ref={refs.C}
+                name="SHAKER"
+                class="drum-pad"
+                id="C"
+                pressed={padPress}
+                active={activeKey === 'C'}
+                audio={shaker}
+            />
           </div>
         </div>
       </div>
